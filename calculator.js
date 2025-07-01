@@ -173,7 +173,7 @@ function div(x, y) {
 }
 
 //check if last place is an operator
-//check if first place is either / or *
+//check if first string of operators contains either / or *
 function hasHangingOperators(arr) {
     const firstNumIndex = arr.findIndex(num => nums.includes(num));
     const firstOperatorString = arr.slice(0, firstNumIndex);
@@ -183,6 +183,7 @@ function hasHangingOperators(arr) {
     const isValidStart = !firstOperatorString.includes('*', '/');
     const isValidEnd = !operators.includes(last)
     
+    //true if NOT  a valid start
     return !isValidStart || !isValidEnd;
 }
 
@@ -192,7 +193,40 @@ function hasHangingOperators(arr) {
     from last operator to end
 */
 function hasDoubleDecimal(arr) {
+    //creates slicedArr
+    //adds groups of nums as an array to an element in slicedArr
+    // num      = [1, +, 2, ., -, *, ., 3]
+    //slicedArr = [[1], [2, .], [., 3]]
+    let lastNumArr = []
+    let slicedArr = [];
+    arr.forEach(e => {
+        if(operators.includes(e)) {
+            if(lastNumArr.length !== 0) {
+                slicedArr.push([...lastNumArr]);
+                lastNumArr.length = 0;
+            }
+        }
+        if(nums.includes(e)) {
+            lastNumArr.push(e);
+        }
+    });
+    slicedArr.push([...lastNumArr]);
 
+    console.log('SLICED ARRAY ');
+    console.table(slicedArr);
+
+    //checks if any sub array contains double decimals
+    //returns resule
+    return hasDblDec = slicedArr.some(e => {
+        const numDec = e.reduce((acc, cur) => 
+            {
+                return cur === '.' ? acc + 1 : acc;
+            }
+            , 0
+        );
+        console.log(numDec);
+        return numDec > 1;
+    });
 }
 
 //check if * and / appear more than once in any consecutive operator string
@@ -253,7 +287,7 @@ function evaluate() {
 
     try {
         //hanging operators
-        if(!hasHangingOperators(calc)) {
+        if(hasHangingOperators(calc)) {
             throw new CalcSyntaxError('Hanging Operator');
         }
         //double decimal
@@ -311,9 +345,14 @@ class CalcMathError extends Error {
 }
 
 function init() {
-    let result = ['+','-', '*', '2', '3', '4', '5', '+', '2'];
-    console.log(hasHangingOperators(result));
-    console.log(result);
+    // let result = ['+','-', '*', '2', '3', '4', '5', '+', '2'];
+    // console.log(hasHangingOperators(result));
+    // console.log(result);
+
+    let dbDec = ['.', '.', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '2'];
+    console.log(dbDec);
+    console.log(hasDoubleDecimal(dbDec));
+    
 
 }
 
