@@ -156,14 +156,43 @@ function clr() {
     console.log(calc);
 }
 
+function add(x, y) {
+
+}
+
+function subtract(x, y) {
+
+}
+
+function mult(x, y) {
+
+}
+
+function div(x, y) {
+
+}
+
 function evaluate() {
     if(calc.length === 0) return;
     //check if decimal appears twice before an operator appears once
-    //check if operator '/' or '+' appears twice in a row
+    //check if operator '/' or '*' appears twice in a row
+    //check for 'hanging' operators 
     //BE ABLE TO PARSE FOR NEGATIVE NUMBERS
         //converting +- chains to condensed + or -
     //push valid nums (dec and negative) and operators into string
     //evaluate string
+    //DONT use eval function instead eval like this
+    /*
+    parse through input and look for high precendence operators. / or *
+    depending on operator, pass adjacent numbers to relevant function.
+    remove 3 entries from original list. Replace with returned value.
+
+    continue iterating through list until only 1 entry remains
+    this 1 entry is the result.
+
+    if at any point there is a math rule being broken, ie /0. return Math ERROR
+    if syntax is wrong. return Syntax ERROR
+    */
 
     result = eval(calc.join(''));
     calc.length = 0;
