@@ -215,16 +215,13 @@ function hasDoubleDecimal(arr) {
     console.log('SLICED ARRAY ');
     console.table(slicedArr);
 
-    //checks if any sub array contains double decimals
-    //returns resule
+    //returns result if any sub array contains double decimals
     return hasDblDec = slicedArr.some(e => {
-        const numDec = e.reduce((acc, cur) => 
-            {
+        const numDec = e.reduce((acc, cur) => {
                 return cur === '.' ? acc + 1 : acc;
             }
             , 0
         );
-        console.log(numDec);
         return numDec > 1;
     });
 }
@@ -291,11 +288,11 @@ function evaluate() {
             throw new CalcSyntaxError('Hanging Operator');
         }
         //double decimal
-        if(!hasDoubleDecimal(calc)) {
+        if(hasDoubleDecimal(calc)) {
             throw new CalcSyntaxError('Decimal appears twice');
         }
         //adjacent multiplicaiton or division
-        if(!hasDoubleOperators(calc)) {
+        if(hasDoubleOperators(calc)) {
             throw new CalcSyntaxError('÷ or × appear twice in a row');
         }
 
@@ -313,10 +310,10 @@ function evaluate() {
 
     } catch (e) {
         if(e instanceof CalcMathError) {
-
+            console.error(e.message);
         }
         else if (e instanceof CalcSyntaxError) {
-
+            console.error(e.message);
         }
         else {
             console.error(e.message);
