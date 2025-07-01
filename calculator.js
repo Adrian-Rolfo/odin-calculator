@@ -157,26 +157,75 @@ function clr() {
 }
 
 function add(x, y) {
-
+    return x + y;
 }
 
 function subtract(x, y) {
-
+    return x - y;
 }
 
 function mult(x, y) {
-
+    return x*y;
 }
 
 function div(x, y) {
+    return x / y;
+}
+
+//check if last place is an operator
+//check if first place is either / or *
+function isHangingOperators(arr) {
+
+}
+
+/*check if decimal appears twice :
+    before first operator 
+    between any subsequent operators
+    from last operator to end
+*/
+function isDoubleDecimal(arr) {
+
+}
+
+//check if * and / appear more than once in any consecutive operator string
+function isDoubleOperators(arr) {
+
+}
+
+
+//reduce consecutive + - string to minimum signage before first num appearance
+function trimStart(arr) {
+    
+}
+
+//after first num appearance condense + - in operator strings to min signage
+function condensePlusMinus(arr) {
+
+}
+
+//combine nums between operators and decimals into single arr element
+function combineNum(arr) {
+
+}
+
+//combine num adjacent to decimals to single element (if they exist)
+//if not exist, adj = 0. 
+//lone decimal '.' with no adjacent num replace with 0
+/*  eg 
+    [1, . , 2]  = [1.2] 
+    [. , 2]     = [0.2]
+    [2, . ,]    = [2.0]
+    [2, +, .]   = [2, +, 0]
+*/
+function combineDecimal(arr) {
 
 }
 
 function evaluate() {
     if(calc.length === 0) return;
+    //check for 'hanging' operators 
     //check if decimal appears twice before an operator appears once
     //check if operator '/' or '*' appears twice in a row
-    //check for 'hanging' operators 
     //BE ABLE TO PARSE FOR NEGATIVE NUMBERS
         //converting +- chains to condensed + or -
     //push valid nums (dec and negative) and operators into string
@@ -194,19 +243,67 @@ function evaluate() {
     if syntax is wrong. return Syntax ERROR
     */
 
-    result = eval(calc.join(''));
+    try {
+        //hanging operators
+        if(!isHangingOperators(calc)) {
+            throw new CalcSyntaxError('Hanging Operator');
+        }
+        //double decimal
+        if(!isDoubleDecimal(calc)) {
+            throw new CalcSyntaxError('Decimal appears twice');
+        }
+        //adjacent multiplicaiton or division
+        if(!isDoubleOperators(calc)) {
+            throw new CalcSyntaxError('÷ or × appear twice in a row');
+        }
+
+        //If start contains multiple +/- trim to minimum signage
+        const calcTrimmed = trimStart(calc);
+        //Condense multiple +/-
+        const calcCondensed = condensePlusMinus(calcTrimmed);
+        const calcComb = combineNum(calcCondensed);
+        const calcDec = combineDecimal(calcCondensed);
+
+        //evaluate
+        const calcResult = 0;
+
+
+
+    } catch (e) {
+        if(e instanceof CalcMathError) {
+
+        }
+        else if (e instanceof CalcSyntaxError) {
+
+        }
+        else {
+            console.error(e.message);
+        }
+    }
+
+
     calc.length = 0;
     calc.push(result);
     updateCurInpTxt();
     updatePastInpTxt();
 }
 
-function operate(calc) {
-    
+class CalcSyntaxError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "CalcSyntaxError";
+    }
+}
+
+class CalcMathError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'CalcMathError';
+    }
 }
 
 function init() {
-    let result = parseInt('1 + - + - + - - - - - - - - 2');
+    let result = 0 + . + 2;
     let result1 = 1 + - + - + - - - - - - - - 2;
     console.log(result);
 }
