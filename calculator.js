@@ -28,7 +28,7 @@ const inputPast = document.querySelector('#inputPast');
 const inputCurrent = document.querySelector('#inputCurrent');
 
 //logic variables
-let nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+let nums = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
 let operators = ['/', '*', '-', '+'];
 let calc = [];
 let result = '';
@@ -174,8 +174,16 @@ function div(x, y) {
 
 //check if last place is an operator
 //check if first place is either / or *
-function isHangingOperators(arr) {
+function hasHangingOperators(arr) {
+    const firstNumIndex = arr.findIndex(num => nums.includes(num));
+    const firstOperatorString = arr.slice(0, firstNumIndex);
+    console.log('FIRST OPERATOR STRING ' + firstOperatorString);
+    const last = arr.at(-1);
 
+    const isValidStart = !firstOperatorString.includes('*', '/');
+    const isValidEnd = !operators.includes(last)
+    
+    return !isValidStart || !isValidEnd;
 }
 
 /*check if decimal appears twice :
@@ -183,12 +191,12 @@ function isHangingOperators(arr) {
     between any subsequent operators
     from last operator to end
 */
-function isDoubleDecimal(arr) {
+function hasDoubleDecimal(arr) {
 
 }
 
 //check if * and / appear more than once in any consecutive operator string
-function isDoubleOperators(arr) {
+function hasDoubleOperators(arr) {
 
 }
 
@@ -245,15 +253,15 @@ function evaluate() {
 
     try {
         //hanging operators
-        if(!isHangingOperators(calc)) {
+        if(!hasHangingOperators(calc)) {
             throw new CalcSyntaxError('Hanging Operator');
         }
         //double decimal
-        if(!isDoubleDecimal(calc)) {
+        if(!hasDoubleDecimal(calc)) {
             throw new CalcSyntaxError('Decimal appears twice');
         }
         //adjacent multiplicaiton or division
-        if(!isDoubleOperators(calc)) {
+        if(!hasDoubleOperators(calc)) {
             throw new CalcSyntaxError('÷ or × appear twice in a row');
         }
 
@@ -303,9 +311,10 @@ class CalcMathError extends Error {
 }
 
 function init() {
-    let result = 0 + . + 2;
-    let result1 = 1 + - + - + - - - - - - - - 2;
+    let result = ['+','-', '*', '2', '3', '4', '5', '+', '2'];
+    console.log(hasHangingOperators(result));
     console.log(result);
+
 }
 
-init();
+init()
