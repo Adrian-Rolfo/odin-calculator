@@ -314,7 +314,8 @@ function condensePlusMinus(arr) {
         [index, length] = [key[0], key[1]];
         copyArr.splice(index, length, ...oprArr.flat());
     }
-    console.log(copyArr);
+    // console.log(copyArr);
+    return copyArr;
 }
 
 //combine nums between operators and decimals into single arr element
@@ -424,7 +425,7 @@ function init() {
     // console.log(dbOpr);
     // console.log(hasDoubleOperators(dbOpr));
 
-    let cdnPM = ['1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
+    let cdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
     console.log(cdnPM);
     condensePlusMinus(cdnPM);
 
