@@ -177,7 +177,6 @@ function div(x, y) {
 function hasHangingOperators(arr) {
     const firstNumIndex = arr.findIndex(num => nums.includes(num));
     const firstOperatorString = arr.slice(0, firstNumIndex);
-    console.log('FIRST OPERATOR STRING ' + firstOperatorString);
     const last = arr.at(-1);
 
     const isValidStart = !firstOperatorString.includes('*', '/');
@@ -228,7 +227,33 @@ function hasDoubleDecimal(arr) {
 
 //check if * and / appear more than once in any consecutive operator string
 function hasDoubleOperators(arr) {
-
+    let lastOprArr = [];
+    let slicedArr = [];
+    arr.forEach(e => {
+        if(nums.includes(e)) {
+            if(lastOprArr.length !== 0) {
+                slicedArr.push([...lastOprArr]);
+                lastOprArr.length = 0;
+            }
+        }
+        if(operators.includes(e)) {
+            lastOprArr.push(e);
+        }
+    });
+    slicedArr.push([...lastOprArr]);
+    
+    console.log('SLICED ARRAY ');
+    console.table(slicedArr);
+    
+    const sOpr = ['*', '/'];
+    return hasDblOpr = slicedArr.some(e => {
+        const numSOpr = e.reduce((acc, cur) => {
+                return sOpr.includes(cur) ? acc + 1 : acc;
+            }
+            , 0
+        );
+        return numSOpr > 1;
+    });
 }
 
 
@@ -306,8 +331,6 @@ function evaluate() {
         //evaluate
         const calcResult = 0;
 
-
-
     } catch (e) {
         if(e instanceof CalcMathError) {
             console.error(e.message);
@@ -346,10 +369,14 @@ function init() {
     // console.log(hasHangingOperators(result));
     // console.log(result);
 
-    let dbDec = ['.', '.', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '2'];
-    console.log(dbDec);
-    console.log(hasDoubleDecimal(dbDec));
+    // let dbDec = ['.', '.', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '2'];
+    // console.log(dbDec);
+    // console.log(hasDoubleDecimal(dbDec));
     
+    let dbOpr = ['1', '+', '*', '3', '4', '.', '+', '/', '.', '3', '2', '+', '2'];
+    console.log(dbOpr);
+    console.log(hasDoubleOperators(dbOpr));
+
 
 }
 
