@@ -264,7 +264,52 @@ function trimStart(arr) {
 
 //after first num appearance condense + - in operator strings to min signage
 function condensePlusMinus(arr) {
+    //keys are [index in arr, initial length], value is arr of operators
+    let slicedOprObj = {};
+    let lastOprArr = [];
 
+    arr.forEach((e, i) => {
+        if(nums.includes(e)) {
+            if(lastOprArr.length !== 0) {
+                const firstNumIndex = i - lastOprArr.length;
+                slicedOprObj[[firstNumIndex, lastOprArr.length]] = [...lastOprArr];
+                lastOprArr.length = 0;
+            }
+        }
+        if(operators.includes(e)) {
+            lastOprArr.push(e);
+        }
+    });
+    
+    console.log('SLICED ARRAY ');
+    console.table(slicedOprObj);
+    
+    for(const [key, oprArr] of Object.entries(slicedOprObj)) {
+        if(key[1] === '1') continue;
+
+        const search = ['+', '-'];
+        let numMinus = 0;
+        //iterate through value array. 
+        //pop every +/- i see and evaluate how many - i have
+        //if number of minus is odd push '-'
+        //if number of minus is even push '+'
+        
+        for(let i = oprArr.length; i >= 0; i--) {
+            const opr = oprArr[i];
+            if(search.includes(opr)) {
+                if(opr === '-') numMinus++;
+                oprArr.splice(i, 1);
+            }
+        }
+
+        if(numMinus%2 === 1) {
+            oprArr.push('-');
+        }
+    }
+
+    console.log('SLICED OBJ AFTER MULTIPLE MINUS REMOVING');
+    console.table(slicedOprObj);
+    
 }
 
 //combine nums between operators and decimals into single arr element
@@ -321,10 +366,7 @@ function evaluate() {
             throw new CalcSyntaxError('÷ or × appear twice in a row');
         }
 
-        //If start contains multiple +/- trim to minimum signage
-        const calcTrimmed = trimStart(calc);
-        //Condense multiple +/-
-        const calcCondensed = condensePlusMinus(calcTrimmed);
+        const calcCondensed = condensePlusMinus(calc);
         const calcComb = combineNum(calcCondensed);
         const calcDec = combineDecimal(calcCondensed);
 
@@ -373,10 +415,13 @@ function init() {
     // console.log(dbDec);
     // console.log(hasDoubleDecimal(dbDec));
     
-    let dbOpr = ['1', '+', '*', '3', '4', '.', '+', '/', '.', '3', '2', '+', '2'];
-    console.log(dbOpr);
-    console.log(hasDoubleOperators(dbOpr));
+    // let dbOpr = ['1', '+', '*', '3', '4', '.', '+', '/', '.', '3', '2', '+', '2'];
+    // console.log(dbOpr);
+    // console.log(hasDoubleOperators(dbOpr));
 
+    let cdnPM = ['1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
+    console.log(cdnPM);
+    condensePlusMinus(cdnPM);
 
 }
 
