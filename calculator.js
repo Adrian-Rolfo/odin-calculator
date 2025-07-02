@@ -265,51 +265,56 @@ function trimStart(arr) {
 //after first num appearance condense + - in operator strings to min signage
 function condensePlusMinus(arr) {
     //keys are [index in arr, initial length], value is arr of operators
-    let slicedOprObj = {};
+    let slicedOprMap = new Map();
     let lastOprArr = [];
 
     arr.forEach((e, i) => {
         if(nums.includes(e)) {
             if(lastOprArr.length !== 0) {
                 const firstNumIndex = i - lastOprArr.length;
-                slicedOprObj[[firstNumIndex, lastOprArr.length]] = [...lastOprArr];
+                slicedOprMap.set([firstNumIndex, lastOprArr.length], [...lastOprArr]);
+                // console.log('ADDING:', [firstNumIndex, lastOprArr.length], [...lastOprArr]);
+                // console.log('Map size:', slicedOprMap.size);
                 lastOprArr.length = 0;
             }
         }
         if(operators.includes(e)) {
             lastOprArr.push(e);
         }
-    });
+    });    
     
-    console.log('SLICED ARRAY ');
-    console.table(slicedOprObj);
-    
-    for(const [key, oprArr] of Object.entries(slicedOprObj)) {
-        if(key[1] === '1') continue;
+    slicedOprMap.forEach(
+        (oprArr, key) => {
+            if(key[1] === 1) return;
 
-        const search = ['+', '-'];
-        let numMinus = 0;
-        //iterate through value array. 
-        //pop every +/- i see and evaluate how many - i have
-        //if number of minus is odd push '-'
-        //if number of minus is even push '+'
-        
-        for(let i = oprArr.length; i >= 0; i--) {
-            const opr = oprArr[i];
-            if(search.includes(opr)) {
-                if(opr === '-') numMinus++;
-                oprArr.splice(i, 1);
+            const search = ['+', '-'];
+            let numMinus = 0;
+            //iterate through value array. 
+            //pop every +/- i see and evaluate how many - i have
+            //if number of minus is odd push '-'
+            //if number of minus is even push '+'
+            
+            for(let i = oprArr.length - 1; i >= 0; i--) {
+                const opr = oprArr[i];
+                if(search.includes(opr)) {
+                    if(opr === '-') numMinus++;
+                    oprArr.splice(i, 1);
+                }
+            }
+
+            if(numMinus%2 === 1) {
+                oprArr.push('-');
             }
         }
-
-        if(numMinus%2 === 1) {
-            oprArr.push('-');
-        }
-    }
-
-    console.log('SLICED OBJ AFTER MULTIPLE MINUS REMOVING');
-    console.table(slicedOprObj);
+    );
     
+    let copyArr = [...arr];
+    const reverseMapEntries = Array.from(slicedOprMap.entries()).reverse();
+    for(const [key, oprArr] of reverseMapEntries) {
+        [index, length] = [key[0], key[1]];
+        copyArr.splice(index, length, ...oprArr.flat());
+    }
+    console.log(copyArr);
 }
 
 //combine nums between operators and decimals into single arr element
