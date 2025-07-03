@@ -377,7 +377,28 @@ function combineNum(arr) {
     [2, +, .]   = [2, +, 0]
 */
 function combineDecimal(arr) {
+    arr.forEach((e, i) => {
+        const strArr = e.split('');
 
+        //has no decimal
+        if(!strArr.includes('.')) return;
+
+        let decIndex = strArr.findIndex(e => e === '.');
+
+        //decimal doesn't appear at start or end
+        if(decIndex !== 0 && decIndex !== strArr.length - 1) return;
+
+        //if dec is at start of array add 0 infront of it
+        if(decIndex - 1 < 0) {
+            strArr.unshift('0')
+            decIndex++;
+        };
+        //if dec is at end of array add 0 after it
+        if(decIndex + 1 === strArr.length) strArr.push('0');
+
+        arr[i] = strArr.join('');
+    })
+    return arr;
 }
 
 function evaluate() {
@@ -418,7 +439,6 @@ function evaluate() {
 
         const calcCondensed = condensePlusMinus(calc);
         const calcComb = combineNum(calcCondensed);
-        const calcDec = combineDecimal(calcCondensed);
 
         //evaluate
         const calcResult = 0;
@@ -477,10 +497,16 @@ function init() {
     // console.log(cmbNum);
     // combineNum(cmbNum);
 
-    let cmbNumCdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
+    let cmbNumCdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '.', '*', '3', '2', '+', '.', '2'];
     console.log(cmbNumCdnPM);
     
     console.log(combineNum(condensePlusMinus(cmbNumCdnPM)));
+    console.log(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
+
+
+    // let cmbDec = ['.', '1', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '.'];
+    // console.log(cmbDec);
+    // combineDecimal(cmbDec);
 }
 
 init()
