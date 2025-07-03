@@ -283,9 +283,10 @@ function condensePlusMinus(arr) {
         }
     });    
     
+    //
     slicedOprMap.forEach(
         (oprArr, key) => {
-            if(key[1] === 1) return;
+            if(key[1] === 1) return; //dont want to condense length of one
 
             const search = ['+', '-'];
             let numMinus = 0;
@@ -308,6 +309,7 @@ function condensePlusMinus(arr) {
         }
     );
     
+    //
     let copyArr = [...arr];
     const reverseMapEntries = Array.from(slicedOprMap.entries()).reverse();
     for(const [key, oprArr] of reverseMapEntries) {
@@ -320,7 +322,49 @@ function condensePlusMinus(arr) {
 
 //combine nums between operators and decimals into single arr element
 function combineNum(arr) {
+     //keys are [index in arr, initial length], value is arr of nums
+    let slicedNumMap = new Map();
+    let lastNumArr = [];
 
+    arr.forEach((e, i) => {
+        if(operators.includes(e)) {
+            if(lastNumArr.length !== 0) {
+                const firstNumIndex = i - lastNumArr.length;
+                slicedNumMap.set([firstNumIndex, lastNumArr.length], [...lastNumArr]);
+                lastNumArr.length = 0;
+            }
+        }
+        if(nums.includes(e)) {
+            lastNumArr.push(e);
+        }
+    });    
+
+    const lastNumIndex = arr.length - lastNumArr.length;
+    slicedNumMap.set([lastNumIndex, lastNumArr.length], [...lastNumArr]);
+
+    // console.log('SLICED ARRAY ');
+    // console.table(slicedNumMap);
+
+        slicedNumMap.forEach(
+        (numArr, key) => {
+            if(key[1] === 1) return; //cant condense length 1
+            
+            slicedNumMap.set(key, numArr.join(''));
+        }
+    );
+
+    // console.table(slicedNumMap);
+
+    let copyArr = [...arr];
+    const reverseMapEntries = Array.from(slicedNumMap.entries()).reverse();
+    for(const [key, numStr] of reverseMapEntries) {
+        [index, length] = [key[0], key[1]];
+        copyArr.splice(index, length, numStr);
+    }
+    
+    // console.log(copyArr.flat());
+    return copyArr.flat();
+    
 }
 
 //combine num adjacent to decimals to single element (if they exist)
@@ -425,10 +469,18 @@ function init() {
     // console.log(dbOpr);
     // console.log(hasDoubleOperators(dbOpr));
 
-    let cdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
-    console.log(cdnPM);
-    condensePlusMinus(cdnPM);
+    // let cdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
+    // console.log(cdnPM);
+    // console.log(condensePlusMinus(cdnPM));
 
+    // let cmbNum = ['1', '+', '*', '3', '4', '.', '7', '4', '3', '+', '/', '.', '3', '2', '+', '2'];
+    // console.log(cmbNum);
+    // combineNum(cmbNum);
+
+    let cmbNumCdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '*', '3', '2', '+', '2'];
+    console.log(cmbNumCdnPM);
+    
+    console.log(combineNum(condensePlusMinus(cmbNumCdnPM)));
 }
 
 init()
