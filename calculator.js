@@ -1,4 +1,4 @@
-const btnContainer =document.querySelector('.btn-container');
+        const btnContainer =document.querySelector('.btn-container');
 //number buttons
 const btn0 = document.querySelector('#btn0');
 const btn1 = document.querySelector('#btn1');
@@ -157,19 +157,40 @@ function clr() {
 }
 
 function add(x, y) {
-    return x + y;
+    return parseFloat(x) + parseFloat(y);
 }
 
 function subtract(x, y) {
-    return x - y;
+    return parseFloat(x) - parseFloat(y);
 }
 
 function mult(x, y) {
-    return x*y;
+    return parseFloat(x)*parseFloat(y);
 }
 
 function div(x, y) {
-    return x / y;
+    return parseFloat(x) / parseFloat(y);
+}
+
+function operate(operator, x, y) {
+    switch (operator) {
+        case '*':
+            return mult(x, y);
+            break;
+        case '/':
+            return div(x, y);
+            break;
+        case '+':
+            return add(x, y);
+            break;
+        case '-':
+            return subtract(x, y);
+            break;
+        default:
+            console.error('Not a valid operator');
+            return undefined;
+            break;
+    }
 }
 
 //check if last place is an operator
@@ -317,6 +338,7 @@ function condensePlusMinus(arr) {
         copyArr.splice(index, length, ...oprArr.flat());
     }
     // console.log(copyArr);
+    console.log('CONDENSE PLUS MINUS ' + copyArr);
     return copyArr;
 }
 
@@ -362,7 +384,7 @@ function combineNum(arr) {
         copyArr.splice(index, length, numStr);
     }
     
-    // console.log(copyArr.flat());
+    console.log('COMBINE NUM ' + copyArr.flat());
     return copyArr.flat();
     
 }
@@ -398,34 +420,25 @@ function combineDecimal(arr) {
 
         arr[i] = strArr.join('');
     })
+
+    console.log('COMBINE DECIMAL ' + arr);
+
     return arr;
 }
 
-function combineOperators(arr) {
-    arr.forEach((e, i) => {
-        if(e.length === 1) return;
-
-        arr[i] = e.join('');
-    })
-}
-
-        //form:
-        /*
-        [-, 2, +, 3.02, *-, 0.0]
-        or
-        [2, +, 3.02, *, -, 0.0]
-
-        all nums exist as one element
-
-        */
-function calculate(arr) {
-    const isFirstNum = nums.includes(arr[0]);
-    let accResult;
-    if(!isFirstNum) {
-        console.log('in here for real yo');
+function makeNegatives(arr) {
+    if(arr[0] === '+') {
+        arr.shift();
+    }
+    if(arr[0] === '-') {
         arr.shift();
         arr[0] = '-' + arr[0];
     }
+    // const isFirstNum = nums.includes(arr[0]);
+    // if(!isFirstNum) {
+    //     arr.shift();
+    //     arr[0] = '-' + arr[0];
+    // }
 
     for(let i = 0; i < arr.length - 2; i++) {
         const first = arr[i];
@@ -433,13 +446,84 @@ function calculate(arr) {
         const third = arr[i + 2];
 
         if(operators.includes(first) && second === '-' && !isNaN(third)) {
-            console.log('splicing');
             arr.splice(i + 1, 2, second + third);
             i--;
         }
     }
     
-    console.log(arr);
+    console.log('MAKE NEGATIVES ' + arr);
+    return arr;
+}
+
+        //form:
+        /*
+        [-, 2, +, 3.02, *-, 0.0]
+        or
+        [2, +, 3.02, *, -0.0]
+
+        all nums exist as one element
+
+        */
+function calculate(arr) {
+    //iterate through array check for all operators
+    //create 2 arrays
+    //count num of * or /
+    //operator order array
+    //index of operator array
+    //search though operator order array, priority high precedence operator
+    //  keep track of this through count of * or /
+    //
+
+    let countMultDiv = 0;
+    let oprOrderArr = [];
+    let oprIndexArr = [];
+
+    arr.forEach((e, i) => {
+        if(operators.includes(e)) {
+            if(e === '*' || e === '/') countMultDiv++;
+            oprOrderArr.push(e);
+            oprIndexArr.push(i);
+        }
+    })
+    
+    // console.log('COUNT MULT DIV ' + countMultDiv);
+    
+    // console.log('OPR ORDER ARRAY ' + oprOrderArr);
+    // console.log('OPR INDEX ARRAY ' + oprIndexArr);
+    
+    
+    let loop = 0;
+    while(oprOrderArr.length !== 0) {
+        // console.log('LOOP' + loop++);
+        // console.log(countMultDiv);
+        let oprInd;
+        if(countMultDiv > 0) {
+            oprInd = oprOrderArr.findIndex(e => e === '/' || e === '*');
+            countMultDiv--;
+        }
+        else {
+            oprInd = oprOrderArr.findIndex(e => operators.includes(e));
+        }
+
+        const indexInArr = oprIndexArr[oprInd];
+        const result = operate(
+            arr[indexInArr], arr[indexInArr - 1], arr[indexInArr + 1]
+        );
+        
+        arr.splice(indexInArr - 1, 3, `${result}`);
+        console.log(arr);
+        
+        oprOrderArr.splice(oprInd, 1);
+        // console.log(`OPR ORDER ARR LOOP ${loop} ` + oprOrderArr);
+        oprIndexArr.splice(oprInd, 1);
+        oprIndexArr.forEach((e, i) => {
+            if(i < oprInd) return;
+            oprIndexArr[i] = e - 2;
+        });
+        // console.log(`OPR INDEX ARR LOOP ${loop} ` + oprIndexArr);
+    }
+
+    return arr;
 
 }
 
@@ -481,12 +565,12 @@ function evaluate() {
 
         const calcCondensed = condensePlusMinus(calc);
         const calcComb = combineNum(calcCondensed);
-        const calcFinalFORMMM = combineDecimal(calcComb);
-        const calcFinalFORMV2 = combineOperators(calcFinalFORMMM);
+        const calcCombDec = combineDecimal(calcComb);
+        const calcFINAL = makeNegatives(calcCombDec);
 
 
         //JUST HAVE TO EVALUATE THE ARRAY NOW
-        const calcResult = calculate(calcFinalFORMMM);
+        const calcResult = calculate(calcFINAL);
 
 
     } catch (e) {
@@ -543,14 +627,32 @@ function init() {
     // console.log(cmbNum);
     // combineNum(cmbNum);
 
-    let cmbNumCdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '.', '*', '3', '2', '+', '.', '2'];
-    console.log(cmbNumCdnPM);
+    // let cmbNumCdnPM = ['+', '-', '.', '-', '1', '+', '-', '-', '+', '-', '*', '+', '4', '.', '+', '-', '.', '*', '3', '2', '+', '.', '2'];
+    // console.log(cmbNumCdnPM);
     
-    console.log(combineNum(condensePlusMinus(cmbNumCdnPM)));
-    console.log(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
-    let val = calculate(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
+    // console.log(combineNum(condensePlusMinus(cmbNumCdnPM)));
+    // console.log(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
+    // let val = makeNegatives(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
+    // console.log(val);
+    // console.log(calculate(val));
 
+    const arr1 = ['+', '-', '+', '-', '.', '-', '3', '.', '2', '+', '-', '5', '*', '-', '.', '4', '+', '-', '.', '6']; //-1.8
+    const arr2 = ['-', '.', '6', '4', '+', '-', '-', '2', '.', '0', '*', '3', '.', '-', '1', '+', '-', '.', '7', '5']; //3.61
+    const arr3 = ['+', '-', '9', '.', '+', '.', '1', '-', '4', '0', '*', '-', '.', '5', '+', '-', '.', '3', '+', '2']; //14.8
+    const arr4 = ['-', '-', '.', '3', '+', '7', '.', '-', '2', '*', '8', '.', '-', '.', '6', '-', '+', '.', '4', '1']; //-9.71
+    const arr5 = ['+', '1', '.', '-', '.', '9', '+', '-', '+', '4', '*', '.', '2', '-', '.', '1', '+', '.', '5', '8']; //3.66
+    
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr1))))));
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr2))))));
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr3))))));
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr4))))));
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr5))))));
 
+    
+    
+    
+    
+    
     // let cmbDec = ['.', '1', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '.'];
     // console.log(cmbDec);
     // combineDecimal(cmbDec);
