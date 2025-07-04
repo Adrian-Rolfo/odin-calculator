@@ -452,6 +452,11 @@ function makeNegatives(arr) {
             arr.splice(i + 1, 2, second + third);
             i--;
         }
+
+        if(operators.includes(first) && second === '+' && !isNaN(third)) {
+            arr.splice(i + 1, 1);
+            i--;
+        }
     }
     
     console.log('MAKE NEGATIVES ' + arr);
@@ -526,7 +531,7 @@ function calculate(arr) {
         // console.log(`OPR INDEX ARR LOOP ${loop} ` + oprIndexArr);
     }
 
-    return arr;
+    return arr[0];
 
 }
 
@@ -590,7 +595,7 @@ function evaluate() {
 
 
     calc.length = 0;
-    calc.push(result);
+    calc.push(calcResult);
     updateCurInpTxt();
     updatePastInpTxt();
 }
@@ -652,15 +657,19 @@ function init() {
     // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr3))))));
     // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr4))))));
     // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr5))))));
+// 9 × 63.0 + - - × 3 - + × - + .0008 ÷ 6 × 2 - + + 3. + .9 ÷ 2 × 3 - - - 3
+    
 
-    
-    
-    
-    
-    
-    // let cmbDec = ['.', '1', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '.'];
-    // console.log(cmbDec);
-    // combineDecimal(cmbDec);
+
+
+
+// let cmbDec = ['.', '1', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '.'];
+// console.log(cmbDec);
+// combineDecimal(cmbDec);
 }
 
-init()
+const test = ['9', '*', '6', '3', '.', '0', '+', '-', '-', '*', '3', '-', '+', '*', '-', '+', '.', '0', '0', '0', '8', '/', '6', '*', '2', '-', '+', '+', '3', '.', '+', '.', '9', '/', '2', '*', '3', '-', '-', '-', '3'];
+    console.log(test);
+    
+    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(test))))));
+// init()
