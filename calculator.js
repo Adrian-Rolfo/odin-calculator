@@ -327,6 +327,9 @@ function condensePlusMinus(arr) {
             if(numMinus%2 === 1) {
                 oprArr.push('-');
             }
+            else {
+                oprArr.push('+');
+            }
         }
     );
     
@@ -637,16 +640,18 @@ function init() {
     // console.log(calculate(val));
 
     const arr1 = ['+', '-', '+', '-', '.', '-', '3', '.', '2', '+', '-', '5', '*', '-', '.', '4', '+', '-', '.', '6']; //-1.8
-    const arr2 = ['-', '.', '6', '4', '+', '-', '-', '2', '.', '0', '*', '3', '.', '-', '1', '+', '-', '.', '7', '5']; //3.61
+    const arr2 = ['-', '.', '6', '4', '+', '+', '-', '2', '.', '0', '*', '3', '.', '-', '1', '+', '-', '.', '7','+', '+', '5']; //3.61
     const arr3 = ['+', '-', '9', '.', '+', '.', '1', '-', '4', '0', '*', '-', '.', '5', '+', '-', '.', '3', '+', '2']; //14.8
     const arr4 = ['-', '-', '.', '3', '+', '7', '.', '-', '2', '*', '8', '.', '-', '.', '6', '-', '+', '.', '4', '1']; //-9.71
-    const arr5 = ['+', '1', '.', '-', '.', '9', '+', '-', '+', '4', '*', '.', '2', '-', '.', '1', '+', '.', '5', '8']; //3.66
+    const arr5 = ['+', '1', '.', '-', '.', '9', '+', '-', '+', '4', '*', '.', '2', '-', '.', '1', '+', '.', '5', '8']; //-0.22
     
-    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr1))))));
+    // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr1))))));
+    console.log(arr2);
+    
     console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr2))))));
-    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr3))))));
-    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr4))))));
-    console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr5))))));
+    // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr3))))));
+    // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr4))))));
+    // console.log('RESULT ' + calculate(makeNegatives(combineDecimal(combineNum(condensePlusMinus(arr5))))));
 
     
     
