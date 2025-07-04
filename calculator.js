@@ -401,6 +401,48 @@ function combineDecimal(arr) {
     return arr;
 }
 
+function combineOperators(arr) {
+    arr.forEach((e, i) => {
+        if(e.length === 1) return;
+
+        arr[i] = e.join('');
+    })
+}
+
+        //form:
+        /*
+        [-, 2, +, 3.02, *-, 0.0]
+        or
+        [2, +, 3.02, *, -, 0.0]
+
+        all nums exist as one element
+
+        */
+function calculate(arr) {
+    const isFirstNum = nums.includes(arr[0]);
+    let accResult;
+    if(!isFirstNum) {
+        console.log('in here for real yo');
+        arr.shift();
+        arr[0] = '-' + arr[0];
+    }
+
+    for(let i = 0; i < arr.length - 2; i++) {
+        const first = arr[i];
+        const second = arr[i + 1];
+        const third = arr[i + 2];
+
+        if(operators.includes(first) && second === '-' && !isNaN(third)) {
+            console.log('splicing');
+            arr.splice(i + 1, 2, second + third);
+            i--;
+        }
+    }
+    
+    console.log(arr);
+
+}
+
 function evaluate() {
     if(calc.length === 0) return;
     //check for 'hanging' operators 
@@ -439,9 +481,13 @@ function evaluate() {
 
         const calcCondensed = condensePlusMinus(calc);
         const calcComb = combineNum(calcCondensed);
+        const calcFinalFORMMM = combineDecimal(calcComb);
+        const calcFinalFORMV2 = combineOperators(calcFinalFORMMM);
 
-        //evaluate
-        const calcResult = 0;
+
+        //JUST HAVE TO EVALUATE THE ARRAY NOW
+        const calcResult = calculate(calcFinalFORMMM);
+
 
     } catch (e) {
         if(e instanceof CalcMathError) {
@@ -502,6 +548,7 @@ function init() {
     
     console.log(combineNum(condensePlusMinus(cmbNumCdnPM)));
     console.log(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
+    let val = calculate(combineDecimal(combineNum(condensePlusMinus(cmbNumCdnPM))));
 
 
     // let cmbDec = ['.', '1', '*', '3', '4', '.', '+', '4', '.', '3', '2', '+', '.'];
