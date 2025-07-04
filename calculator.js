@@ -169,6 +169,7 @@ function mult(x, y) {
 }
 
 function div(x, y) {
+    if(parseFloat(y) === 0) throw new CalcMathError(`Can't divide by 0!`);
     return parseFloat(x) / parseFloat(y);
 }
 
@@ -580,6 +581,10 @@ function evaluate() {
         //JUST HAVE TO EVALUATE THE ARRAY NOW
         const calcResult = calculate(calcFINAL);
 
+        calc.length = 0;
+        calc.push(calcResult);
+        updateCurInpTxt();
+        updatePastInpTxt();
 
     } catch (e) {
         if(e instanceof CalcMathError) {
@@ -594,10 +599,6 @@ function evaluate() {
     }
 
 
-    calc.length = 0;
-    calc.push(calcResult);
-    updateCurInpTxt();
-    updatePastInpTxt();
 }
 
 class CalcSyntaxError extends Error {
